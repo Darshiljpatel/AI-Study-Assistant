@@ -3,29 +3,43 @@ package com.example.aistudyassistant.data
 import com.google.firebase.Firebase
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.content
 import java.io.IOException
 
 /**
  * Repository that wraps all Gemini AI interactions via Firebase AI Logic.
  *
  * Uses the Gemini Developer API backend (free tier, no billing required).
- * The model instance is created once and reused across all calls.
  */
 class GeminiRepository {
 
     private val generativeModel = Firebase.ai(backend = GenerativeBackend.googleAI())
-        .generativeModel("gemini-2.0-flash")
+        .generativeModel(
+            modelName = "gemini-2.0-flash",
+            systemInstruction = content {
+                text("You are a helpful AI Study Assistant. Explain concepts clearly, use simple language, give examples, and help with exam prep. Break difficult topics into steps and provide code/formulas when applicable. Do not just give answers; encourage understanding. Keep responses concise.")
+            }
+        )
+
+    private var chat = generativeModel.startChat()
 
     /**
-     * Sends a prompt to Gemini and returns the response text.
+     * Resets the chat history.
+     */
+    fun resetChat() {
+        chat = generativeModel.startChat()
+    }
+
+    /**
+     * Sends a prompt to the active Gemini Chat session and returns the response text.
      *
      * @param prompt The user's input text.
      * @return [Result.success] with the response string, or [Result.failure] with a
      *         descriptive exception.
      */
-    suspend fun generateResponse(prompt: String): Result<String> {
+    suspend fun sendMessage(prompt: String): Result<String> {
         return try {
-            val response = generativeModel.generateContent(prompt)
+            val response = chat.sendMessage(prompt)
             val text = response.text
 
             if (text.isNullOrBlank()) {
