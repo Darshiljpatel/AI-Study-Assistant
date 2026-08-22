@@ -1,5 +1,6 @@
 package com.example.aistudyassistant.ui.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -8,6 +9,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.MenuBook
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -16,13 +19,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation3.runtime.NavKey
+import com.example.aistudyassistant.AskAi
+import com.example.aistudyassistant.ExplainTopic
+import com.example.aistudyassistant.GenerateQuiz
+import com.example.aistudyassistant.Home
+import com.example.aistudyassistant.SummarizeNotes
+import com.example.aistudyassistant.ui.components.AppBottomNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    onNavigateTo: (NavKey) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         modifier = modifier,
-        bottomBar = { HomeBottomNavigation() }
+        bottomBar = { AppBottomNavigation(currentRoute = Home, onNavigate = onNavigateTo) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -34,7 +47,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         ) {
             AppHeader()
             WelcomeCard()
-            FeaturesSection()
+            FeaturesSection(onNavigateTo = onNavigateTo)
             StudyPlanSection()
         }
     }
@@ -82,12 +95,12 @@ private fun WelcomeCard() {
 }
 
 @Composable
-private fun FeaturesSection() {
+private fun FeaturesSection(onNavigateTo: (NavKey) -> Unit) {
     val features = listOf(
-        FeatureItem("Ask AI", Icons.AutoMirrored.Filled.Chat),
-        FeatureItem("Summarize Notes", Icons.AutoMirrored.Filled.MenuBook),
-        FeatureItem("Generate Quiz", Icons.Default.Quiz),
-        FeatureItem("Explain Topic", Icons.Default.Lightbulb)
+        FeatureItem("Ask AI", Icons.AutoMirrored.Filled.Chat, AskAi),
+        FeatureItem("Summarize Notes", Icons.AutoMirrored.Filled.MenuBook, SummarizeNotes),
+        FeatureItem("Generate Quiz", Icons.Default.Quiz, GenerateQuiz),
+        FeatureItem("Explain Topic", Icons.Default.Lightbulb, ExplainTopic)
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -103,24 +116,46 @@ private fun FeaturesSection() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                FeatureCard(features[0], modifier = Modifier.weight(1f))
-                FeatureCard(features[1], modifier = Modifier.weight(1f))
+                FeatureCard(
+                    feature = features[0],
+                    onClick = { onNavigateTo(features[0].route) },
+                    modifier = Modifier.weight(1f)
+                )
+                FeatureCard(
+                    feature = features[1],
+                    onClick = { onNavigateTo(features[1].route) },
+                    modifier = Modifier.weight(1f)
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                FeatureCard(features[2], modifier = Modifier.weight(1f))
-                FeatureCard(features[3], modifier = Modifier.weight(1f))
+                FeatureCard(
+                    feature = features[2],
+                    onClick = { onNavigateTo(features[2].route) },
+                    modifier = Modifier.weight(1f)
+                )
+                FeatureCard(
+                    feature = features[3],
+                    onClick = { onNavigateTo(features[3].route) },
+                    modifier = Modifier.weight(1f)
+                )
             }
         }
     }
 }
 
 @Composable
-private fun FeatureCard(feature: FeatureItem, modifier: Modifier = Modifier) {
+private fun FeatureCard(
+    feature: FeatureItem,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     ElevatedCard(
-        modifier = modifier.aspectRatio(1f),
+        modifier = modifier
+            .aspectRatio(1f)
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -194,25 +229,4 @@ private fun StudyPlanSection() {
     }
 }
 
-@Composable
-private fun HomeBottomNavigation() {
-    var selectedItem by remember { mutableIntStateOf(0) }
-    val items = listOf("Home", "History", "Profile")
-    val icons = listOf(Icons.Default.Home, Icons.Default.History, Icons.Default.Person)
-
-    NavigationBar(
-        containerColor = MaterialTheme.colorScheme.surface,
-        tonalElevation = 8.dp
-    ) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                icon = { Icon(icons[index], contentDescription = item) },
-                label = { Text(item) },
-                selected = selectedItem == index,
-                onClick = { selectedItem = index }
-            )
-        }
-    }
-}
-
-private data class FeatureItem(val title: String, val icon: ImageVector)
+private data class FeatureItem(val title: String, val icon: ImageVector, val route: NavKey)

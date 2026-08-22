@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
 
     enableEdgeToEdge()
     setContent {
-      AIStudyAssistantTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { MainNavigation() } }
+      AIStudyAssistantTheme { Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) { AppNavigation() } }
     }
   }
 }
