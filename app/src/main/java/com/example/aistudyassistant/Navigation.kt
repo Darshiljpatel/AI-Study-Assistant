@@ -64,21 +64,18 @@ fun AppNavigation() {
                 )
             }
             entry<SummarizeNotes> {
-                SummarizeNotesScreen(
-                    onBack = onBack,
-                    modifier = Modifier.safeDrawingPadding()
+                SummarizerScreen(
+                    onNavigateBack = onBack,
                 )
             }
             entry<GenerateQuiz> {
-                GenerateQuizScreen(
-                    onBack = onBack,
-                    modifier = Modifier.safeDrawingPadding()
+                QuizScreen(
+                    onNavigateBack = onBack,
                 )
             }
             entry<ExplainTopic> {
                 ExplainTopicScreen(
-                    onBack = onBack,
-                    modifier = Modifier.safeDrawingPadding()
+                    onNavigateBack = onBack,
                 )
             }
         },
