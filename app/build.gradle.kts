@@ -104,4 +104,11 @@ dependencies {
   implementation(libs.retrofit)
   implementation(libs.retrofit.converter.gson)
   implementation(libs.okhttp.logging.interceptor)
+  // Room Database
+  implementation(libs.room.runtime)
+  annotationProcessor(libs.room.compiler)
+  implementation(libs.room.ktx)
+
+  // PDFBox for Android
+  implementation(libs.pdfbox.android)
 }
