@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.compose.compiler)
@@ -14,6 +16,14 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        
+        val properties = Properties()
+        val localProperties = project.rootProject.file("local.properties")
+        if (localProperties.exists()) {
+            properties.load(localProperties.inputStream())
+        }
+        val nebiusApiKey = properties.getProperty("NEBIUS_API_KEY") ?: ""
+        buildConfigField("String", "NEBIUS_API_KEY", "\"$nebiusApiKey\"")
     }
 
     buildTypes {
@@ -29,7 +39,7 @@ android {
     buildFeatures {
       compose = true
       aidl = false
-      buildConfig = false
+      buildConfig = true
       shaders = false
     }
 
@@ -86,6 +96,12 @@ dependencies {
 
   // Firebase
   implementation(platform(libs.firebase.bom))
-  implementation(libs.firebase.ai)
   implementation(libs.firebase.analytics)
+  implementation(libs.firebase.appcheck.playintegrity)
+  debugImplementation(libs.firebase.appcheck.debug)
+  
+  // Retrofit & Nebius
+  implementation(libs.retrofit)
+  implementation(libs.retrofit.converter.gson)
+  implementation(libs.okhttp.logging.interceptor)
 }
