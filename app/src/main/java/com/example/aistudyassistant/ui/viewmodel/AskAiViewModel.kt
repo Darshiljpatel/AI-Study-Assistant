@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aistudyassistant.data.ChatMessage
 import com.example.aistudyassistant.data.NebiusRepository
+import com.example.aistudyassistant.AIStudyAssistantApp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,12 +23,13 @@ data class AskAiUiState(
 class AskAiViewModel : ViewModel() {
 
     private val repository = NebiusRepository()
+    private val historyRepo = AIStudyAssistantApp.historyRepository
 
     private val _uiState = MutableStateFlow(AskAiUiState())
     val uiState: StateFlow<AskAiUiState> = _uiState.asStateFlow()
 
     /**
-     * Sends the given [prompt] to Gemini and updates the chat history.
+     * Sends the given [prompt] to Nebius and updates the chat history.
      */
     fun sendMessage(prompt: String) {
         val trimmedPrompt = prompt.trim()
@@ -54,6 +56,8 @@ class AskAiViewModel : ViewModel() {
                             isLoading = false
                         )
                     }
+                    // Save history
+                    historyRepo.saveHistory(trimmedPrompt, responseText, "Ask AI")
                 }
                 .onFailure { error ->
                     // 4. On failure, set the error message and loading to false
