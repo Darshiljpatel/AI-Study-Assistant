@@ -23,3 +23,20 @@ data class NebiusChoice(
     val message: NebiusMessage,
     @SerializedName("finish_reason") val finishReason: String
 )
+
+data class QuizQuestion(
+    val question: String,
+    val options: List<String>,
+    val correctAnswer: String,
+    val explanation: String
+)
+
+data class TopicExplanation(
+    val definition: String,
+    val coreConcept: String,
+    val howItWorks: String,
+    val realWorldExample: String,
+    val codeExample: String,
+    val commonMistakes: String,
+    val quickRevisionNotes: String
+)
