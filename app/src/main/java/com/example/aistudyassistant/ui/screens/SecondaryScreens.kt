@@ -237,32 +237,3 @@ fun ChatBubble(message: com.example.aistudyassistant.data.ChatMessage) {
         }
     }
 }
-@Composable
-fun SummarizeNotesScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    SecondaryScreenTemplate(
-        title = "Summarize Notes",
-        message = "Summarizer coming soon",
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun GenerateQuizScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    SecondaryScreenTemplate(
-        title = "Generate Quiz",
-        message = "Quiz generator coming soon",
-        onBack = onBack,
-        modifier = modifier
-    )
-}
-
-@Composable
-fun ExplainTopicScreen(onBack: () -> Unit, modifier: Modifier = Modifier) {
-    SecondaryScreenTemplate(
-        title = "Explain Topic",
-        message = "Topic explainer coming soon",
-        onBack = onBack,
-        modifier = modifier
-    )
-}
