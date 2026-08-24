@@ -3,7 +3,7 @@ package com.example.aistudyassistant.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aistudyassistant.data.ChatMessage
-import com.example.aistudyassistant.data.GeminiRepository
+import com.example.aistudyassistant.data.NebiusRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ data class AskAiUiState(
 
 class AskAiViewModel : ViewModel() {
 
-    private val repository = GeminiRepository()
+    private val repository = NebiusRepository()
 
     private val _uiState = MutableStateFlow(AskAiUiState())
     val uiState: StateFlow<AskAiUiState> = _uiState.asStateFlow()
