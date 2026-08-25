@@ -66,7 +66,7 @@ fun ExplainTopicScreen(
 fun ExplainSetupView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiState) {
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(24.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(24.dp)
@@ -76,10 +76,15 @@ fun ExplainSetupView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiSt
             onValueChange = { viewModel.updateTopic(it) },
             label = { Text("Topic to explain") },
             placeholder = { Text("E.g., Quantum Computing, Polymorphism") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f)
+            )
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Text("Target Audience Level", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
             val levels = listOf("Beginner", "College Student", "Advanced")
             SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -94,12 +99,15 @@ fun ExplainSetupView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiSt
                 }
             }
         }
+        
+        Spacer(modifier = Modifier.weight(1f))
 
         Button(
             onClick = { viewModel.explainTopic() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
         ) {
-            Text("Explain Topic")
+            Text("Explain Topic", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -115,7 +123,7 @@ fun ExplainResultView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiS
 
     Column(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(24.dp)
             .fillMaxSize()
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -126,8 +134,10 @@ fun ExplainResultView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiS
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary
         )
+        
+        HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp))
 
-        ExpandableSection(title = "Definition", content = explanation.definition)
+        ExpandableSection(title = "Definition", content = explanation.definition, defaultExpanded = true)
         ExpandableSection(title = "Core Concept", content = explanation.coreConcept)
         ExpandableSection(title = "How It Works", content = explanation.howItWorks)
         ExpandableSection(title = "Real-World Example", content = explanation.realWorldExample)
@@ -139,53 +149,61 @@ fun ExplainResultView(viewModel: ExplainTopicViewModel, uiState: ExplainTopicUiS
         ExpandableSection(title = "Common Mistakes", content = explanation.commonMistakes)
         ExpandableSection(title = "Quick Revision Notes", content = explanation.quickRevisionNotes)
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = { viewModel.clearAll() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().height(56.dp),
+            shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp)
         ) {
-            Text("Explain Another Topic")
+            Text("Explain Another Topic", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
 
 @Composable
-fun ExpandableSection(title: String, content: String) {
-    var expanded by remember { mutableStateOf(false) }
+fun ExpandableSection(title: String, content: String, defaultExpanded: Boolean = false) {
+    var expanded by remember { mutableStateOf(defaultExpanded) }
 
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
         colors = CardDefaults.elevatedCardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = if (expanded) 4.dp else 1.dp)
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { expanded = !expanded }
-                    .padding(16.dp),
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (expanded) "Collapse" else "Expand"
+                    contentDescription = if (expanded) "Collapse" else "Expand",
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
             
             AnimatedVisibility(visible = expanded) {
-                Text(
-                    text = content,
-                    modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                androidx.compose.foundation.text.selection.SelectionContainer {
+                    Text(
+                        text = content,
+                        modifier = Modifier.padding(start = 20.dp, end = 20.dp, bottom = 20.dp),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
